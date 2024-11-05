@@ -1,0 +1,14 @@
+services:
+    localstack:
+        image: localstack/localstack
+        ports:
+            - "4566:4566"
+            - "4571:4571"
+        environment:
+            - SERVICES=s3,sqs,lambda,dynamodb
+            - DEBUG=1
+
+    redis:
+        image: redis:latest
+        ports:
+            - "6379:6379"
