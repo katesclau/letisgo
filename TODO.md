@@ -11,4 +11,4 @@
 - Add CI/CD pipeline
 - Add tests
 - Add documentation
-- Add logging
+- Add logging https://betterstack.com/community/guides/logging/zerolog/

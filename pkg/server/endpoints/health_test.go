@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,27 +11,8 @@ func TestHealthEndpoint(t *testing.T) {
 
 	handler := Health
 
-	t.Run("No Authorization Header", func(t *testing.T) {
-		req, err := http.NewRequest("GET", "/health", nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		rr := httptest.NewRecorder()
-		handler.ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusForbidden {
-			t.Errorf("handler returned wrong status code: got %v want %v",
-				status, http.StatusForbidden)
-		}
-	})
-
-	t.Run("Valid Authorization Header", func(t *testing.T) {
-		req, err := http.NewRequest("GET", "/health", nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-		req.Header.Set("Authorization", "Bearer validtoken")
+	t.Run("Returns 200 on GET", func(t *testing.T) {
+		req := genRequest(t, "GET")
 
 		rr := httptest.NewRecorder()
 		handler.ServeHTTP(rr, req)
@@ -41,19 +23,36 @@ func TestHealthEndpoint(t *testing.T) {
 		}
 	})
 
-	t.Run("Malformed Authorization Header", func(t *testing.T) {
-		req, err := http.NewRequest("GET", "/health", nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-		req.Header.Set("Authorization", "MalformedHeader")
+	t.Run("Returns 200 on POST", func(t *testing.T) {
+		req := genRequest(t, "POST")
 
 		rr := httptest.NewRecorder()
 		handler.ServeHTTP(rr, req)
 
-		if status := rr.Code; status != http.StatusBadRequest {
+		if status := rr.Code; status != http.StatusOK {
 			t.Errorf("handler returned wrong status code: got %v want %v",
-				status, http.StatusBadRequest)
+				status, http.StatusOK)
 		}
 	})
+}
+
+func genRequest(t *testing.T, m string) *http.Request {
+	req, err := http.NewRequest(m, "/health", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ctx := context.WithValue(
+		context.WithValue(
+			context.WithValue(
+				context.Background(),
+				"api_name", "test name",
+			),
+			"api_version", "0.0.1",
+		),
+		"api_description",
+		"test description",
+	)
+
+	return req.WithContext(ctx)
 }

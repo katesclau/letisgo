@@ -13,10 +13,4 @@ dev:
 	./bin/air
 
 test:
-	{ \
-	echo "Running tests..."; \
-	set -a; \
-	source .env.test ;\
-	set +a ;\
-	go test -v ./...;\
-	}
+	go test -v ./...
