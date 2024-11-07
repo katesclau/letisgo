@@ -24,7 +24,7 @@ type Server struct {
 	ctx     context.Context
 }
 
-func GetContext(api endpoints.APIDefinition) (context.Context, context.CancelFunc) {
+func getContext(api endpoints.APIDefinition) (context.Context, context.CancelFunc) {
 	ctx := context.WithValue(
 		context.WithValue(
 			context.WithValue(
@@ -40,7 +40,7 @@ func GetContext(api endpoints.APIDefinition) (context.Context, context.CancelFun
 }
 
 func NewServer(api endpoints.APIDefinition, port string) *Server {
-	ctx, cancel := GetContext(api)
+	ctx, cancel := getContext(api)
 	defer cancel()
 
 	wrappedMux := middlewares.ApplyMiddlewares(
