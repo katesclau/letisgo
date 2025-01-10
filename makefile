@@ -4,13 +4,13 @@ include .env.test
 .PHONY: build run hot-reload
 
 build:
-	go build -o main main.go
+	go build -o main backend/main.go
 
 run:
-	go run main.go
+	go run backend/main.go
 
 dev:
-	./bin/air
+	./bin/air --build.cmd "go build -o ./bin/api backend/main.go" --build.bin "./bin/api"
 
 test:
 	go test -v ./...

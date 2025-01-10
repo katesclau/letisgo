@@ -9,12 +9,14 @@ type APIDefinition struct {
 	Mux         *http.ServeMux
 }
 
-func NewAPIDefinition(name, description string, version string) *APIDefinition {
+type APIRoutes map[string]http.HandlerFunc
+
+func NewAPIDefinition(name, description string, version string, routes *APIRoutes) *APIDefinition {
 	mux := http.ServeMux{}
 
-	// Declares Paths
-	mux.HandleFunc("/", Root.ServeHTTP)
-	mux.HandleFunc("/health", Health.ServeHTTP)
+	for path, handler := range *routes {
+		mux.HandleFunc(path, handler)
+	}
 
 	return &APIDefinition{
 		Name:        name,
