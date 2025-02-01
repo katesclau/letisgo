@@ -19,3 +19,16 @@ go.work
 .env
 .env.prod
 .env.stage
+
+# Local terraform files
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.*
+.terraform/
+
+# Binary files
+bin/
+
+# Temp files
+tmp/

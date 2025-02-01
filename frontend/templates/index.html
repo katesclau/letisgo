@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!--
+          * 204 No Content by default does nothing, but is not an error
+          * 2xx, 3xx and 422 responses are non-errors and are swapped
+          * 4xx & 5xx responses are not swapped and are errors
+          * all other responses are swapped using "..." as a catch-all
+        -->
+        <meta
+            name="htmx-config"
+            content='{
+                "responseHandling":[
+                    {"code":"204", "swap": false},
+                    {"code":"[23]..", "swap": true},
+                    {"code":"422", "swap": true},
+                    {"code":"[45]..", "swap": true, "target":"#error"},
+                    {"code":"...", "swap": true}
+                ]
+            }'
+        />
+        <title>HTMX Sample</title>
+        <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+    </head>
+    <body>
+        <div id="navbar"></div>
+        <div
+            id="pagecontainer"
+            hx-get="/home"
+            hx-trigger="load"
+            hx-target="#pagecontainer"
+            hx-swap="innerHtml"
+        >
+            <!-- Page content will be dynamically loaded here -->
+        </div>
+        <div id="error"></div>
+    </body>
+</html>

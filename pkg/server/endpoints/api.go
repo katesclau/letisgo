@@ -1,27 +1,22 @@
 package endpoints
 
-import "net/http"
+import (
+	"net/http"
+
+	"mnesis.com/pkg/server/authorization"
+)
 
 type APIDefinition struct {
 	Name        string
 	Description string
 	Version     string
 	Mux         *http.ServeMux
+	Routes      *APIRoutes
 }
 
-type APIRoutes map[string]http.HandlerFunc
-
-func NewAPIDefinition(name, description string, version string, routes *APIRoutes) *APIDefinition {
-	mux := http.ServeMux{}
-
-	for path, handler := range *routes {
-		mux.HandleFunc(path, handler)
-	}
-
-	return &APIDefinition{
-		Name:        name,
-		Description: description,
-		Version:     version,
-		Mux:         &mux,
-	}
+type APIRouteEndpoint struct {
+	Handler           http.HandlerFunc
+	AuthorizationRole authorization.AuthorizationRole
 }
+
+type APIRoutes map[string]APIRouteEndpoint

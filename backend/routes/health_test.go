@@ -9,7 +9,7 @@ import (
 
 func TestHealthEndpoint(t *testing.T) {
 
-	handler := Health
+	handler := Health.Handler
 
 	t.Run("Returns 200 on GET", func(t *testing.T) {
 		req := genRequest(t, "GET")

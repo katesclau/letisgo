@@ -1,0 +1,10 @@
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li hx-get="/pages" hx-trigger="load" hx-target="#navlinks">
+            <div id="navlinks">
+                <!-- Sub pages will be dynamically loaded here -->
+            </div>
+        </li>
+    </ul>
+</nav>

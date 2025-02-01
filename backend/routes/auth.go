@@ -8,12 +8,12 @@ import (
 	"mnesis.com/pkg/server/endpoints"
 )
 
-var Health = endpoints.APIRouteEndpoint{
+var Profile = endpoints.APIRouteEndpoint{
 	Handler:           healthHandler,
-	AuthorizationRole: authorization.None,
+	AuthorizationRole: authorization.Authenticated,
 }
 
-var healthHandler = http.HandlerFunc(
+var profileHandler = http.HandlerFunc(
 	func(w http.ResponseWriter, r *http.Request) {
 		apiName := r.Context().Value("api_name")
 		apiVersion := r.Context().Value("api_version")

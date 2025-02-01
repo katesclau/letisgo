@@ -7,8 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type TracingMiddleware struct{}
+
 // TracingMiddleware adds a unique trace ID to each request
-func TracingMiddleware(next http.Handler) http.Handler {
+func (t TracingMiddleware) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		traceID := uuid.New().String()
 		ctx := context.WithValue(r.Context(), "TraceID", traceID)

@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"time"
 
+	"mnesis.com/pkg/server/authorization"
 	"mnesis.com/pkg/server/endpoints"
 	"mnesis.com/pkg/server/middlewares"
 )
@@ -22,6 +23,30 @@ type Server struct {
 	name    string
 	cancel  func()
 	ctx     context.Context
+}
+
+func NewAPIDefinition(name, description string, version string, routes *endpoints.APIRoutes) *endpoints.APIDefinition {
+	mux := http.ServeMux{}
+
+	for path, endpoint := range *routes {
+		mux.HandleFunc(path, endpoint.Handler)
+	}
+
+	return &endpoints.APIDefinition{
+		Name:        name,
+		Description: description,
+		Version:     version,
+		Mux:         &mux,
+		Routes:      routes,
+	}
+}
+
+func getAuthorizationRoutes(routes *endpoints.APIRoutes) map[string]authorization.AuthorizationRole {
+	authorizationRoutes := make(map[string]authorization.AuthorizationRole)
+	for path, endpoint := range *routes {
+		authorizationRoutes[path] = endpoint.AuthorizationRole
+	}
+	return authorizationRoutes
 }
 
 func getContext(api endpoints.APIDefinition) (context.Context, context.CancelFunc) {
@@ -41,14 +66,17 @@ func getContext(api endpoints.APIDefinition) (context.Context, context.CancelFun
 
 func NewServer(api endpoints.APIDefinition, port string) *Server {
 	ctx, cancel := getContext(api)
-	defer cancel()
 
 	wrappedMux := middlewares.ApplyMiddlewares(
 		http.HandlerFunc(api.Mux.ServeHTTP),
-		middlewares.LoggingMiddleware,
-		middlewares.AuthorizationMiddleware,
-		middlewares.TracingMiddleware,
-		middlewares.MetricsMiddleware,
+		middlewares.LoggingMiddleware{},
+		middlewares.AuthorizationMiddleware{
+			Options: middlewares.AuthorizationMiddlewareOptions{
+				AuthorizedRoutes: getAuthorizationRoutes(api.Routes),
+			},
+		},
+		middlewares.TracingMiddleware{},
+		middlewares.MetricsMiddleware{},
 	)
 
 	return &Server{
@@ -56,6 +84,7 @@ func NewServer(api endpoints.APIDefinition, port string) *Server {
 		port:    port,
 		name:    api.Name,
 		ctx:     ctx,
+		cancel:  cancel,
 	}
 }
 

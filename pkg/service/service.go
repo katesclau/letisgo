@@ -33,7 +33,7 @@ func (s *Service) Start() {
 	// TODO Implement PubSub for Async processes
 
 	// Init HTTP Server
-	api := endpoints.NewAPIDefinition(s.Config.APIName, s.Config.APIDescription, s.Config.APIVersion, s.Routes)
+	api := server.NewAPIDefinition(s.Config.APIName, s.Config.APIDescription, s.Config.APIVersion, s.Routes)
 	server := server.NewServer(*api, s.Config.Port)
 	// Start the server, and handle shutdown
 	server.Listen()
