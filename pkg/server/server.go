@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"time"
 
+	"mnesis.com/pkg/config"
 	"mnesis.com/pkg/server/authorization"
 	"mnesis.com/pkg/server/endpoints"
 	"mnesis.com/pkg/server/middlewares"
@@ -25,7 +26,7 @@ type Server struct {
 	ctx     context.Context
 }
 
-func NewAPIDefinition(name, description string, version string, routes *endpoints.APIRoutes) *endpoints.APIDefinition {
+func NewAPIDefinition(cfg config.Config, routes *endpoints.APIRoutes) *endpoints.APIDefinition {
 	mux := http.ServeMux{}
 
 	for path, endpoint := range *routes {
@@ -33,9 +34,9 @@ func NewAPIDefinition(name, description string, version string, routes *endpoint
 	}
 
 	return &endpoints.APIDefinition{
-		Name:        name,
-		Description: description,
-		Version:     version,
+		Name:        cfg.ServiceName,
+		Description: cfg.ServiceDescription,
+		Version:     cfg.ServiceVersion,
 		Mux:         &mux,
 		Routes:      routes,
 	}

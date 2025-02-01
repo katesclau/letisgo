@@ -6,14 +6,18 @@ import (
 
 	"github.com/Netflix/go-env"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
-	Env            string `env:"ENVIRONMENT"`
-	Port           string `env:"PORT"`
-	APIName        string `env:"API_NAME"`
-	APIVersion     string `env:"API_VERSION"`
-	APIDescription string `env:"API_DESCRIPTION"`
+	Env                string `env:"ENVIRONMENT"`
+	Port               string `env:"PORT"`
+	ServiceName        string `env:"SERVICE_NAME"`
+	ServiceVersion     string `env:"SERVICE_VERSION"`
+	ServiceDescription string `env:"SERVICE_DESCRIPTION"`
+
+	LogLevelString string `env:"LOG_LEVEL"`
+	LogLevel       logrus.Level
 }
 
 func GetConfig(ctx context.Context) (*Config, error) {
@@ -35,9 +39,29 @@ func GetConfig(ctx context.Context) (*Config, error) {
 }
 
 func fillDefaultValues(cfg *Config) {
-	cfg.Env = "dev"
-	cfg.Port = "8080"
-	cfg.APIName = "letisgo"
-	cfg.APIVersion = "0.0.0"
-	cfg.APIDescription = "This is an service boilerplate."
+	cfg.Env = firstNonEmpty(cfg.Env, "dev")
+	cfg.Port = firstNonEmpty(cfg.Port, "8080")
+	cfg.ServiceName = firstNonEmpty(cfg.ServiceName, "letisgo")
+	cfg.ServiceVersion = firstNonEmpty(cfg.ServiceVersion, "0.0.0")
+	cfg.ServiceDescription = firstNonEmpty(cfg.ServiceDescription, "This is a service boilerplate.")
+
+	setLogLevel(cfg)
+}
+
+func setLogLevel(cfg *Config) {
+	level, err := logrus.ParseLevel(cfg.LogLevelString)
+	if err != nil {
+		cfg.LogLevel = logrus.InfoLevel
+	} else {
+		cfg.LogLevel = level
+	}
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, v := range values {
+		if v != "" {
+			return v
+		}
+	}
+	return ""
 }

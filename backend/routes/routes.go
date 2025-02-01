@@ -8,9 +8,8 @@ import (
 // Routes is a map of API endpoints
 func Get() *endpoints.APIRoutes {
 	return &endpoints.APIRoutes{
-		"/":        frontend.Root,
+		"/":        frontend.Index,
 		"/health":  Health,
 		"/profile": Profile,
-		"/pages":   frontend.Pages,
 	}
 }

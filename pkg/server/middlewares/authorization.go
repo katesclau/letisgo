@@ -24,7 +24,7 @@ func (a AuthorizationMiddleware) Handler(next http.Handler) http.Handler {
 			"method": r.Method,
 			"path":   r.URL.Path,
 			"auth":   r.Header.Get("Authorization"),
-		}).Info("AuthorizationMiddleware")
+		}).Trace("AuthorizationMiddleware")
 
 		if a.Options.AuthorizedRoutes[r.URL.Path] == authorization.None {
 			next.ServeHTTP(w, r)

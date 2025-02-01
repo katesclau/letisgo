@@ -6,16 +6,15 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
 
+	log "github.com/sirupsen/logrus"
 	"mnesis.com/backend/routes"
 	"mnesis.com/pkg/config"
 	"mnesis.com/pkg/service"
 )
 
 func main() {
-	fmt.Println("Starting Service...")
+	log.Info("Starting Service...")
 	ctx := context.TODO()
 
 	// Load Configuration
@@ -23,6 +22,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading configuration: %v", err)
 	}
+
+	// Define Log Level
+	log.SetLevel(cfg.LogLevel)
 
 	// Load Routes
 	routes := routes.Get()
