@@ -1,5 +1,16 @@
 package frontend
 
-templ index(name string) {
-	<div>Hello, { name }</div>
+import "mnesis.com/frontend/components"
+
+templ Index() {
+	<script src="/assets/js/htmx.min.js"></script>
+	@components.HeaderTemplate("Letisgo")
+	@components.Navbar([]components.Page{
+		{Title: "Home", Link: "/"},
+		{Title: "About", Link: "/about"},
+		{Title: "Contact", Link: "/contact"},
+	})
+	@components.Access()
+	@components.Content()
+	@components.Footer()
 }

@@ -1,0 +1,18 @@
+package components
+
+type Page struct {
+	Title string
+	Link  string
+}
+
+templ Navbar(pages []Page) {
+	<nav>
+		<ul>
+			for _, page := range pages {
+				<li>
+					@NavbarItem(page)
+				</li>
+			}
+		</ul>
+	</nav>
+}
