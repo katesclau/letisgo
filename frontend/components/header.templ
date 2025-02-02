@@ -1,9 +1,9 @@
 package components
 
-templ HeaderTemplate(name string) {
+templ Header(name string) {
 	<header>
-		<script src="/assets/js/htmx.min.js"></script>
-		<link rel="stylesheet" href="/static/css/output.css"/>
-		<h1>{ name }</h1>
+		<div class="flex flex-col">
+			{ children... }
+		</div>
 	</header>
 }
