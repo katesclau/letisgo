@@ -2,8 +2,8 @@ package frontend
 
 import "mnesis.com/frontend/components"
 
-templ Index() {
-	<script src="/assets/js/htmx.min.js"></script>
+templ Base() {
+	@components.Head("Letisgo")
 	@components.HeaderTemplate("Letisgo")
 	@components.Navbar([]components.Page{
 		{Title: "Home", Link: "/"},
@@ -11,6 +11,17 @@ templ Index() {
 		{Title: "Contact", Link: "/contact"},
 	})
 	@components.Access()
-	@components.Content()
+	@components.Content() {
+		{ children... }
+	}
 	@components.Footer()
+}
+
+templ Home() {
+	@Base() {
+		<div class="flex flex-col items-center gap-6 p-7 md:flex-row md:gap-8 rounded-2x1">
+			<h1>Welcome to Letisgo</h1>
+			<p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p>
+		</div>
+	}
 }

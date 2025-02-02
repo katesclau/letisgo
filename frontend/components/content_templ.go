@@ -29,7 +29,15 @@ func Content() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<main><h2>Welcome to Letisgo</h2><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p><p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p></main>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"content\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
