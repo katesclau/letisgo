@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"mnesis.com/frontend"
+	"mnesis.com/frontend/pages"
 	"mnesis.com/pkg/server/endpoints"
 	"mnesis.com/pkg/ui"
 )
@@ -12,6 +12,6 @@ func Get() *endpoints.APIRoutes {
 		"GET /health":  Health,
 		"GET /profile": Profile,
 		"GET /static/": ui.File,
-		"GET /":        ui.Render(frontend.Home),
+		"GET /":        ui.Render(pages.Home),
 	}
 }

@@ -1,0 +1,19 @@
+package layout
+
+import "mnesis.com/frontend/components/meta"
+import "mnesis.com/frontend/components/navigation"
+
+templ Base() {
+	@meta.Head("Letisgo")
+	@Header(){
+		@navigation.Navbar([]navigation.Page{
+			{Title: "Home", Link: "/"},
+			{Title: "About", Link: "/about"},
+			{Title: "Contact", Link: "/contact"},
+		})
+	}
+	@Content() {
+		{ children... }
+	}
+	@Footer()
+}

@@ -1,0 +1,22 @@
+package navigation
+
+import "mnesis.com/frontend/components/basic"
+
+type Page struct {
+	Title string
+	Link  templ.SafeURL
+}
+
+templ Navbar(pages []Page) {
+	<nav class="p-4">
+		@basic.Row(){
+			@NavbarBrand("Letisgo")
+			<div class="gap-6">
+				for _, page := range pages {
+					@NavbarItem(page.Link, page.Title)
+				}
+			</div>
+			@Access()
+		}
+	</nav>
+}
