@@ -2,17 +2,19 @@ package components
 
 type Page struct {
 	Title string
-	Link  string
+	Link  templ.SafeURL
 }
 
 templ Navbar(pages []Page) {
-	<nav>
-		<ul>
-			for _, page := range pages {
-				<li>
-					@NavbarItem(page)
-				</li>
-			}
-		</ul>
+	<nav class="p-4">
+		<div clas="flex flex-row space-x-4">
+			@NavbarBrand("Letisgo")
+			<div class="p-4">
+				for _, page := range pages {
+					@NavbarItem(page.Link, page.Title)
+				}
+			</div>
+			@Access()
+		</div>
 	</nav>
 }

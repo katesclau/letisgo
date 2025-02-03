@@ -1,5 +1,5 @@
 package components
 
-templ NavbarItem(page Page) {
-	<a href="{ page.Link }">{ page.Title }</a>
+templ NavbarItem(link templ.SafeURL, title string) {
+	<a href={ link }>{ title }</a>
 }

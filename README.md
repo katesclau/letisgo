@@ -1,7 +1,7 @@
 # LETISGO
 
 LETISGO is a robust framework designed to implement the Command Query Responsibility Segregation (CQRS)
-pattern with built-in support for both REST and GraphQL APIs.
+pattern with built-in support for both REST.
 
 This framework aims to simplify the development of scalable and maintainable applications
 by separating the read and write operations, thus optimizing performance and scalability.
@@ -18,7 +18,7 @@ To set up the development environment for LETISGO, follow these steps:
 
 2. **Install dependencies:**
    ```sh
-   make install
+   make prepare
    ```
 
 3. **Set up environment variables:**
@@ -39,27 +39,30 @@ To define a REST endpoint on `/backend/routes`,
 create a controller in the `controllers` directory
 and define your routes in the `routes` file.
 
-### GraphQL API
+### Frontend
 
-To define a GraphQL endpoint,
-create a resolver in the `resolvers` directory
-and define your schema in the `schema` file.
+This framework includes a frontend application built with HTMX, Templ, and Tailwind CSS.
+To start the frontend server, run the following command:
 
-## Extension
+```sh
+make dev
+```
 
-LETISGO is designed to be easily extendable. You can add new features or modify existing ones by following these steps:
+### TODO
 
-1. **Add a new command or query:**
-   Create a new file in the `commands` or `queries` directory and implement your logic.
-
-2. **Extend the API:**
-   Add new routes or resolvers as needed in the `controllers` or `resolvers` directory.
-
-## Makefile
-
-The `Makefile` is used to automate common tasks. Here are some of the key commands:
-
-- `make install`: Install all dependencies.
-- `make dev`: Run the development server.
-- `make test`: Run the test suite.
-- `make build`: Build the project for production.
+- [x] Rest API
+    - [x] Routes
+    - [x] Views
+    - [x] Static Files
+- [ ] Frontend:
+    - [x] HTMX
+    - [x] Tailwind CSS
+    - [x] Templ
+    - [x] Hot Reloading
+- [ ] Add Authentication/Authorization
+- [ ] Add Cache support
+- [ ] Add DynamoDB support
+- [ ] Add EventBridge support
+- [ ] Add S3 support
+- [ ] Implement a testing framework
+- [ ] Add support for WebSockets

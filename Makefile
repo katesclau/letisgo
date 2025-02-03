@@ -6,14 +6,23 @@ include .env.test
 prepare:
 	./scripts/install_deps.sh
 
+templ:
+	@templ generate --watch --proxy="http://localhost:8080"
+
+server:
+	./bin/air
+
+tailwind:
+	./bin/tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css --watch
+
+dev:
+	make -j5 tailwind server templ
+
 build:
 	go build -o main backend/main.go
 
 run:
 	go run backend/main.go
-
-dev:
-	./bin/air
 
 test:
 	go test -v ./...

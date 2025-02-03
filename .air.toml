@@ -5,8 +5,8 @@ tmp_dir = "tmp"
 [build]
 args_bin = []
 bin = "./bin/api"
-cmd = "templ generate && ./bin/tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css && go build -o ./bin/api backend/main.go"
-delay = 1000
+cmd = "go build -o ./bin/api backend/main.go"
+delay = 100
 exclude_dir = ["assets", "tmp", "vendor", "testdata"]
 exclude_file = []
 exclude_regex = ["_test.go", ".*_templ.go"]
