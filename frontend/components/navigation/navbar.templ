@@ -1,6 +1,6 @@
 package navigation
 
-import "mnesis.com/frontend/components/basic"
+import "mnesis.com/frontend/components/positioning"
 
 type Page struct {
 	Title string
@@ -8,10 +8,10 @@ type Page struct {
 }
 
 templ Navbar(pages []Page) {
-	<nav class="p-4">
-		@basic.Row(){
+	<nav>
+		@positioning.Row(){
 			@NavbarBrand("Letisgo")
-			<div class="gap-6">
+			<div>
 				for _, page := range pages {
 					@NavbarItem(page.Link, page.Title)
 				}

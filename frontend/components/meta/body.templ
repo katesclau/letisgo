@@ -1,7 +1,11 @@
 package meta
 
 templ Body(font string) {
-	<body class="font-sans hover:font-serif">
-		{ children... }
+	<body>
+		<div>
+			<div>
+				{ children... }
+			</div>
+		</div>
 	</body>
 }

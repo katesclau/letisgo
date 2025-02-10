@@ -13,7 +13,7 @@ server:
 	./bin/air
 
 tailwind:
-	./bin/tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css --watch
+	npm run watch
 
 dev:
 	make -j5 tailwind server templ

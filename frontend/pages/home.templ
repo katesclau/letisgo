@@ -1,12 +1,38 @@
 package pages
 
 import "mnesis.com/frontend/components/layout"
+import "mnesis.com/frontend/components/positioning"
+import "mnesis.com/frontend/components/basic"
 
 templ Home() {
 	@layout.Base() {
-		<div class="flex flex-col items-center gap-6 p-7 md:flex-row md:gap-8 rounded-2x1">
+		<div>
 			<h1>Welcome to Letisgo</h1>
 			<p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p>
+
+			<h2>Features</h2>
+			@positioning.Col() {
+				<ul>
+					<li>Simple templating language</li>
+					<li>Component-based architecture</li>
+					<li>Easy to use</li>
+				</ul>
+				<ul>
+					<li>Layout components</li>
+					<li>Action components</li>
+					<li>Hot reload</li>
+				</ul>
+			}
+
+			<h2>Some buttons in row</h2>
+			@positioning.Row() {
+				@basic.Button("secondary") {
+					Click me
+				}
+				@basic.Button("primary") {
+					Click me too
+				}
+			}
 		</div>
 	}
 }

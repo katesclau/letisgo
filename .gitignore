@@ -32,3 +32,6 @@ bin/
 
 # Temp files
 tmp/
+
+# Node files
+node_modules/

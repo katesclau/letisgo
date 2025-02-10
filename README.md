@@ -8,7 +8,15 @@ by separating the read and write operations, thus optimizing performance and sca
 
 ## Development Setup
 
-To set up the development environment for LETISGO, follow these steps:
+To set up the development environment for LETISGO.
+
+### Prerequisites:
+
+TailwindCSS CLI requires watchmand installed, and this may vary depending on your operating system.
+check the link below for more information on how to install watchman on your operating system.
+https://facebook.github.io/watchman/docs/install
+
+### Steps:
 
 1. **Clone the repository:**
    ```sh
