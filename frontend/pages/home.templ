@@ -6,24 +6,23 @@ import "mnesis.com/frontend/components/basic"
 
 templ Home() {
 	@layout.Base() {
-		<div>
+		<div class="px-4 pt-10 pb-24 sm:px-6 xl:pr-0">
 			<h1>Welcome to Letisgo</h1>
-			<p>Letisgo is a simple web application that demonstrates the use of the Letisgo templating language.</p>
+			<p>Letisgo is a simple web application that demonstrates the use of the Letisgo Boilerplate.</p>
 
 			<h2>Features</h2>
-			@positioning.Col() {
-				<ul>
-					<li>Simple templating language</li>
-					<li>Component-based architecture</li>
-					<li>Easy to use</li>
-				</ul>
-				<ul>
-					<li>Layout components</li>
-					<li>Action components</li>
-					<li>Hot reload</li>
-				</ul>
+			@positioning.Row() {
+				@positioning.Col() {
+					<span>Simple templating language</span>
+					<span>Component-based architecture</span>
+					<span>Easy to use</span>
+				}
+				@positioning.Col() {
+					<span>Layout components</span>
+					<span>Action components</span>
+					<span>Hot reload</span>
+				}
 			}
-
 			<h2>Some buttons in row</h2>
 			@positioning.Row() {
 				@basic.Button("secondary") {

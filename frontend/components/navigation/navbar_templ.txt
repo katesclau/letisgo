@@ -1,0 +1,5 @@
+<nav class=\"navbar w-full\">
+ <div class=\"flex px-4 space-x-8 hidden sm:block w-full\">
+</div><div class=\"flex flex-row-reverse px-4 space-x-8 sm:hidden w-full\">
+</div>
+</nav>

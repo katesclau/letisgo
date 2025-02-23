@@ -35,3 +35,9 @@ tmp/
 
 # Node files
 node_modules/
+
+# Font Awesome assets
+frontend/static/css/font-awesome.*
+
+# Fonts
+frontend/static/fonts/*

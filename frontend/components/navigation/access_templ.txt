@@ -1,0 +1,5 @@
+<div class=\"inline-flex float-right right-4\">
+</div>
+<div class=\"inline-flex float-right right-4\">
+<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Password: </label><input type=\"password\" name=\"password\"><!-- if there is a button in form, it will close the modal --><button class=\"btn\">Login</button> <button class=\"btn\">Forgot Password</button></div></form>
+</div>

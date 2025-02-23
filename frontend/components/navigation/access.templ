@@ -1,7 +1,28 @@
 package navigation
 
+import "mnesis.com/frontend/components/basic"
+
 templ Access() {
-	<div>
-		Hello, { ctx.Value("user").(string) }
-	</div>
+	{{ isLoggedIn := ctx.Value("user") != "none" }}
+	if isLoggedIn {
+		<div class="inline-flex float-right right-4">
+			{{ user := ctx.Value("user").(string) }}
+			@basic.Button(user)
+		</div>
+	} else {
+		<div class="inline-flex float-right right-4">
+  			@basic.Modal("Login", "Welcome back!"){
+		    	<form method="dialog" class="w-full">
+						<div class="grid grix-cols-2 place-content-center gap-4">
+						<label>Username: </label><input type="text" name="username">
+						<label>Password: </label><input type="password" name="password">
+
+       			<!-- if there is a button in form, it will close the modal -->
+		        <button class="btn">Login</button>
+		        <button class="btn">Forgot Password</button>
+						</div>
+		      </form>
+     		}
+		</div>
+	}
 }

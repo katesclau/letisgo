@@ -1,0 +1,9 @@
+<div class=\"px-4 pt-10 pb-24 sm:px-6 xl:pr-0\"><h1>Welcome to Letisgo</h1><p>Letisgo is a simple web application that demonstrates the use of the Letisgo Boilerplate.</p><h2>Features</h2>
+<span>Simple templating language</span> <span>Component-based architecture</span> <span>Easy to use</span>
+ 
+<span>Layout components</span> <span>Action components</span> <span>Hot reload</span>
+<h2>Some buttons in row</h2>
+Click me
+ 
+Click me too
+</div>
