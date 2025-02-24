@@ -1,16 +1,33 @@
 package navigation
 
-import "mnesis.com/frontend/components/basic"
+import (
+	"mnesis.com/frontend/components/basic"
+	"github.com/sirupsen/logrus"
+	"mnesis.com/pkg/models"
+	"mnesis.com/pkg/helpers"
+)
 
 templ Access() {
-	{{ isLoggedIn := ctx.Value("user") != "none" }}
+	{{
+		isLoggedIn := false
+		user, err := helpers.Get[*models.User](ctx, "user")
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Trace("[Access] Unable to parse user from context")
+		} else {
+			logrus.WithFields(logrus.Fields{
+				"user": user,
+			}).Trace("[Access] User in context")
+			isLoggedIn = true
+		}
+	}}
 	if isLoggedIn {
-		<div class="inline-flex float-right right-4">
-			{{ user := ctx.Value("user").(string) }}
-			@basic.Button(user)
+		<div id="access" class="inline-flex float-right right-4">
+			{user.Username}
 		</div>
 	} else {
-		<div class="inline-flex float-right right-4">
+		<div id="access" class="inline-flex float-right right-4">
   			@basic.Modal("Login", "Welcome back!"){
 		    	<form method="dialog" class="w-full">
 						<div class="grid grix-cols-2 place-content-center gap-4">
@@ -18,8 +35,8 @@ templ Access() {
 						<label>Password: </label><input type="password" name="password">
 
        			<!-- if there is a button in form, it will close the modal -->
-		        <button class="btn">Login</button>
-		        <button class="btn">Forgot Password</button>
+		        <button class="btn" hx-post="/login" hx-swap="outerHTML" hx-target="#access">Login</button>
+		        <button class="btn" hx-post="/forgot" hx-swap="innerHTML" hx-target="#content">Forgot Password</button>
 						</div>
 		      </form>
      		}

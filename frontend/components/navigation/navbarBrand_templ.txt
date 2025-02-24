@@ -1,2 +1,0 @@
-<a href=\"/\" class=\"text-white font-bold text-xl p-1\">
-</a>

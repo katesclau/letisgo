@@ -8,7 +8,12 @@ package navigation
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "mnesis.com/frontend/components/basic"
+import (
+	"github.com/sirupsen/logrus"
+	"mnesis.com/frontend/components/basic"
+	"mnesis.com/pkg/helpers"
+	"mnesis.com/pkg/models"
+)
 
 func Access() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -31,14 +36,30 @@ func Access() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		isLoggedIn := ctx.Value("user") != "none"
+
+		isLoggedIn := false
+		user, err := helpers.Get[*models.User](ctx, "user")
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Trace("[Access] Unable to parse user from context")
+		} else {
+			logrus.WithFields(logrus.Fields{
+				"user": user,
+			}).Trace("[Access] User in context")
+			isLoggedIn = true
+		}
 		if isLoggedIn {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"inline-flex float-right right-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"access\" class=\"inline-flex float-right right-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			user := ctx.Value("user").(string)
-			templ_7745c5c3_Err = basic.Button(user).Render(ctx, templ_7745c5c3_Buffer)
+			var templ_7745c5c3_Var2 string
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(user.Username)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `frontend/components/navigation/access.templ`, Line: 27, Col: 17}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -47,11 +68,11 @@ func Access() templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"inline-flex float-right right-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"access\" class=\"inline-flex float-right right-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Var3 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 				if !templ_7745c5c3_IsBuffer {
@@ -63,13 +84,13 @@ func Access() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Password: </label><input type=\"password\" name=\"password\"><!-- if there is a button in form, it will close the modal --><button class=\"btn\">Login</button> <button class=\"btn\">Forgot Password</button></div></form>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Password: </label><input type=\"password\" name=\"password\"><!-- if there is a button in form, it will close the modal --><button class=\"btn\" hx-post=\"/login\" hx-swap=\"outerHTML\" hx-target=\"#access\">Login</button> <button class=\"btn\" hx-post=\"/forgot\" hx-swap=\"innerHTML\" hx-target=\"#content\">Forgot Password</button></div></form>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = basic.Modal("Login", "Welcome back!").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = basic.Modal("Login", "Welcome back!").Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

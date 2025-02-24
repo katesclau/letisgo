@@ -1430,6 +1430,12 @@
   .m-1 {
     margin: calc(var(--spacing) * 1);
   }
+  .m-2 {
+    margin: calc(var(--spacing) * 2);
+  }
+  .m-7 {
+    margin: calc(var(--spacing) * 7);
+  }
   .filter {
     display: flex;
     flex-wrap: wrap;
@@ -1712,6 +1718,9 @@
     padding-inline: calc(0.25rem * 0);
     width: var(--size);
     height: var(--size);
+  }
+  .h-8 {
+    height: calc(var(--spacing) * 8);
   }
   .w-52 {
     width: calc(var(--spacing) * 52);

@@ -10,8 +10,8 @@ import (
 func Get() *endpoints.APIRoutes {
 	return &endpoints.APIRoutes{
 		"GET /health":  Health,
-		"GET /profile": Profile,
+		"POST /login":  Login,
 		"GET /static/": ui.File,
-		"GET /":        ui.Render(pages.Home),
+		"GET /":        ui.RenderPage(pages.Home),
 	}
 }

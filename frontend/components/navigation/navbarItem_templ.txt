@@ -1,3 +1,0 @@
-<div class=\"btn\"><a href=\"
-\">
-</a></div>
