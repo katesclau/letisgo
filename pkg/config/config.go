@@ -15,6 +15,9 @@ type Config struct {
 	ServiceName        string `env:"SERVICE_NAME"`
 	ServiceVersion     string `env:"SERVICE_VERSION"`
 	ServiceDescription string `env:"SERVICE_DESCRIPTION"`
+	RedisHost          string `env:"REDIS_HOST"`
+
+	JWTSecret string `env:"JWT_SECRET,default:jwt-secret"`
 
 	LogLevelString string `env:"LOG_LEVEL"`
 	LogLevel       logrus.Level

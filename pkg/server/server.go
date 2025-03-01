@@ -14,6 +14,7 @@ import (
 	"mnesis.com/pkg/server/authorization"
 	"mnesis.com/pkg/server/endpoints"
 	"mnesis.com/pkg/server/middlewares"
+	"mnesis.com/pkg/server/session"
 )
 
 const keyServerAddr = "mnesis-server-addr"
@@ -26,7 +27,7 @@ type Server struct {
 	ctx     context.Context
 }
 
-func NewAPIDefinition(cfg config.Config, routes *endpoints.APIRoutes) *endpoints.APIDefinition {
+func NewAPIDefinition(cfg config.Config, routes *endpoints.APIRoutes, sessionManager *session.SessionManager) *endpoints.APIDefinition {
 	mux := http.ServeMux{}
 
 	for path, endpoint := range *routes {
@@ -34,11 +35,12 @@ func NewAPIDefinition(cfg config.Config, routes *endpoints.APIRoutes) *endpoints
 	}
 
 	return &endpoints.APIDefinition{
-		Name:        cfg.ServiceName,
-		Description: cfg.ServiceDescription,
-		Version:     cfg.ServiceVersion,
-		Mux:         &mux,
-		Routes:      routes,
+		Name:           cfg.ServiceName,
+		Description:    cfg.ServiceDescription,
+		Version:        cfg.ServiceVersion,
+		Mux:            &mux,
+		Routes:         routes,
+		SessionManager: sessionManager,
 	}
 }
 
@@ -75,6 +77,7 @@ func NewServer(api endpoints.APIDefinition, port string) *Server {
 			Options: middlewares.AuthorizationMiddlewareOptions{
 				AuthorizedRoutes: getAuthorizationRoutes(api.Routes),
 			},
+			SessionManager: api.SessionManager,
 		},
 		middlewares.TracingMiddleware{},
 		middlewares.MetricsMiddleware{},

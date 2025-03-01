@@ -15,7 +15,7 @@ import (
 
 func main() {
 	log.Info("Starting Service...")
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	// Load Configuration
 	cfg, err := config.GetConfig(ctx)

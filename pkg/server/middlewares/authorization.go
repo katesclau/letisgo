@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"mnesis.com/pkg/server/authorization"
+	"mnesis.com/pkg/server/session"
 )
 
 type AuthodizedRoutes = map[string]authorization.AuthorizationRole
@@ -15,7 +16,8 @@ type AuthorizationMiddlewareOptions struct {
 }
 
 type AuthorizationMiddleware struct {
-	Options AuthorizationMiddlewareOptions
+	Options        AuthorizationMiddlewareOptions
+	SessionManager *session.SessionManager
 }
 
 // AuthorizationMiddleware checks if the user is authorized
@@ -28,6 +30,7 @@ func (a AuthorizationMiddleware) Handler(next http.Handler) http.Handler {
 			"auth":   r.Header.Get("Authorization"),
 		}).Trace("AuthorizationMiddleware")
 
+		a.SessionManager.Authorize(w, r, authorization.SuperAdmin)
 		if r.Header.Get("Authorization") == "" {
 			ctx = context.WithValue(ctx, "user", "none")
 			log.WithFields(log.Fields{

@@ -29,6 +29,7 @@ go.work
 
 # Binary files
 bin/
+bin/*
 
 # Temp files
 tmp/

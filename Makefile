@@ -15,8 +15,15 @@ server:
 tailwind:
 	npm run watch
 
-dev:
-	make -j5 tailwind server templ
+infra:
+	docker compose up -d --wait
+	cd backend/terraform/service && tflocal init && tflocal apply -auto-approve && cd -
+
+infra-down:
+	docker compose down
+
+dev: infra
+	REDIS_HOST=localhost:6379 make -j5 tailwind server templ
 
 build:
 	go build -o main backend/main.go

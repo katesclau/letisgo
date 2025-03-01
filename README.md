@@ -23,16 +23,33 @@ https://facebook.github.io/watchman/docs/install
    git clone https://github.com/yourusername/letisgo.git
    cd letisgo
    ```
+2. **Configure Environment**
+   ```sh
+   cp .env.example .env
+   ```
 
-2. **Install dependencies:**
+3. **Define AWS Profile for local developmnent**
+   ```sh
+   export AWS_PROFILE=localstack
+   echo " \n\
+[localstack] \n\
+aws_access_key_id = localstack \n\
+aws_secret_access_key = localstack \n\
+region = us-east-1 \n\
+endpoint_url = http://localhost:4566 \n\
+output = json \n\
+    " >> ~/.aws/credentials
+   ```
+
+4. **Install dependencies:**
    ```sh
    make prepare
    ```
 
-3. **Set up environment variables:**
+5. **Set up environment variables:**
    Create a `.env` file in the root directory and add the necessary environment variables.
 
-4. **Run the development server:**
+6. **Run the development server:**
    ```sh
    make dev
    ```
