@@ -9,6 +9,14 @@ services:
       - DEBUG=1
 
   redis:
-    image: redis:6.0.9
+    image: redis:6.2-alpine
+    restart: always
     ports:
       - "6379:6379"
+    command: redis-server --loglevel warning
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+    driver: local

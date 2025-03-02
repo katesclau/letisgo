@@ -11,13 +11,8 @@ import (
 
 type AuthodizedRoutes = map[string]authorization.AuthorizationRole
 
-type AuthorizationMiddlewareOptions struct {
-	AuthorizedRoutes AuthodizedRoutes
-}
-
 type AuthorizationMiddleware struct {
-	Options        AuthorizationMiddlewareOptions
-	SessionManager *session.SessionManager
+	SessionManager session.SessionManager
 }
 
 // AuthorizationMiddleware checks if the user is authorized
@@ -30,15 +25,16 @@ func (a AuthorizationMiddleware) Handler(next http.Handler) http.Handler {
 			"auth":   r.Header.Get("Authorization"),
 		}).Trace("AuthorizationMiddleware")
 
-		a.SessionManager.Authorize(w, r, authorization.SuperAdmin)
-		if r.Header.Get("Authorization") == "" {
+		user, auth := a.SessionManager.Get(w, r)
+
+		if user == nil {
 			ctx = context.WithValue(ctx, "user", "none")
 			log.WithFields(log.Fields{
 				"user": ctx.Value("user"),
 			}).Trace("[AuthorizationMiddleware] Defined user")
 		}
 
-		if a.Options.AuthorizedRoutes[r.URL.Path] == authorization.None {
+		if auth {
 			next.ServeHTTP(w, r.Clone(ctx))
 			return
 		}

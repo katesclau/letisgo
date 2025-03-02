@@ -8,7 +8,7 @@ import (
 	"mnesis.com/pkg/server/endpoints"
 )
 
-var Health = endpoints.APIRouteEndpoint{
+var Health = endpoints.RouteEndpoint{
 	Handler:           healthHandler,
 	AuthorizationRole: authorization.None,
 }

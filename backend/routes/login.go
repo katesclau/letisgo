@@ -11,7 +11,7 @@ import (
 	"mnesis.com/pkg/server/endpoints"
 )
 
-var Login = endpoints.APIRouteEndpoint{
+var Login = endpoints.RouteEndpoint{
 	Handler:           loginHandler,
 	AuthorizationRole: authorization.None,
 }

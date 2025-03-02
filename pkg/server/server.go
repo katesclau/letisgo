@@ -10,7 +10,6 @@ import (
 	"os/signal"
 	"time"
 
-	"mnesis.com/pkg/config"
 	"mnesis.com/pkg/server/authorization"
 	"mnesis.com/pkg/server/endpoints"
 	"mnesis.com/pkg/server/middlewares"
@@ -19,7 +18,18 @@ import (
 
 const keyServerAddr = "mnesis-server-addr"
 
-type Server struct {
+type Server interface {
+	Listen()
+}
+
+type ServerConfig struct {
+	API       endpoints.Endpoints
+	RedisUrl  string
+	JWTSecret string
+	Port      string
+}
+
+type DefaultServer struct {
 	handler http.Handler
 	port    string
 	name    string
@@ -27,72 +37,36 @@ type Server struct {
 	ctx     context.Context
 }
 
-func NewAPIDefinition(cfg config.Config, routes *endpoints.APIRoutes, sessionManager *session.SessionManager) *endpoints.APIDefinition {
-	mux := http.ServeMux{}
+func New(cfg ServerConfig) Server {
+	ctx, cancel := getContext(cfg.API)
 
-	for path, endpoint := range *routes {
-		mux.HandleFunc(path, endpoint.Handler)
-	}
-
-	return &endpoints.APIDefinition{
-		Name:           cfg.ServiceName,
-		Description:    cfg.ServiceDescription,
-		Version:        cfg.ServiceVersion,
-		Mux:            &mux,
-		Routes:         routes,
-		SessionManager: sessionManager,
-	}
-}
-
-func getAuthorizationRoutes(routes *endpoints.APIRoutes) map[string]authorization.AuthorizationRole {
-	authorizationRoutes := make(map[string]authorization.AuthorizationRole)
-	for path, endpoint := range *routes {
-		authorizationRoutes[path] = endpoint.AuthorizationRole
-	}
-	return authorizationRoutes
-}
-
-func getContext(api endpoints.APIDefinition) (context.Context, context.CancelFunc) {
-	ctx := context.WithValue(
-		context.WithValue(
-			context.WithValue(
-				context.Background(),
-				"api_name", api.Name,
-			),
-			"api_version", api.Version,
-		),
-		"api_description",
-		api.Description,
-	)
-	return context.WithCancel(ctx)
-}
-
-func NewServer(api endpoints.APIDefinition, port string) *Server {
-	ctx, cancel := getContext(api)
+	// Create sessionManager
+	authStore := authorization.New(endpoints.GetAuthorizationRoutes(cfg.API.Routes))
+	sessionManager := session.New(session.RedisSessionManagerConfig{
+		JWTSecret: []byte(cfg.JWTSecret),
+		RedisUrl:  cfg.RedisUrl,
+	}, authStore)
 
 	wrappedMux := middlewares.ApplyMiddlewares(
-		http.HandlerFunc(api.Mux.ServeHTTP),
+		http.HandlerFunc(cfg.API.Mux.ServeHTTP),
 		middlewares.LoggingMiddleware{},
 		middlewares.AuthorizationMiddleware{
-			Options: middlewares.AuthorizationMiddlewareOptions{
-				AuthorizedRoutes: getAuthorizationRoutes(api.Routes),
-			},
-			SessionManager: api.SessionManager,
+			SessionManager: sessionManager,
 		},
 		middlewares.TracingMiddleware{},
 		middlewares.MetricsMiddleware{},
 	)
 
-	return &Server{
+	return &DefaultServer{
 		handler: wrappedMux,
-		port:    port,
-		name:    api.Name,
+		port:    cfg.Port,
+		name:    cfg.API.Name,
 		ctx:     ctx,
 		cancel:  cancel,
 	}
 }
 
-func (s *Server) Listen() {
+func (s *DefaultServer) Listen() {
 
 	instance := &http.Server{
 		Addr:    fmt.Sprintf(":%s", s.port),
@@ -123,5 +97,4 @@ func (s *Server) Listen() {
 	}
 
 	log.Println("Server exiting")
-
 }

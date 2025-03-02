@@ -14,15 +14,15 @@ type Options struct {
 	// Add more options here
 }
 
-type OptionFn func(*endpoints.APIRouteEndpoint) error
+type OptionFn func(*endpoints.RouteEndpoint) error
 
-func RenderPage(node func() templ.Component, optFns ...OptionFn) endpoints.APIRouteEndpoint {
-	c := endpoints.APIRouteEndpoint{}
+func RenderPage(node func() templ.Component, optFns ...OptionFn) endpoints.RouteEndpoint {
+	c := endpoints.RouteEndpoint{}
 
 	for _, optFn := range optFns {
 		err := optFn(&c)
 		if err != nil {
-			return endpoints.APIRouteEndpoint{}
+			return endpoints.RouteEndpoint{}
 		}
 	}
 	c.Handler = func(w http.ResponseWriter, r *http.Request) {
@@ -33,13 +33,13 @@ func RenderPage(node func() templ.Component, optFns ...OptionFn) endpoints.APIRo
 	return c
 }
 
-func RenderComponent(handler func(w http.ResponseWriter, r *http.Request), optFns ...OptionFn) endpoints.APIRouteEndpoint {
-	c := endpoints.APIRouteEndpoint{}
+func RenderComponent(handler func(w http.ResponseWriter, r *http.Request), optFns ...OptionFn) endpoints.RouteEndpoint {
+	c := endpoints.RouteEndpoint{}
 
 	for _, optFn := range optFns {
 		err := optFn(&c)
 		if err != nil {
-			return endpoints.APIRouteEndpoint{}
+			return endpoints.RouteEndpoint{}
 		}
 	}
 

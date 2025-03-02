@@ -13,16 +13,14 @@ import (
 	"mnesis.com/pkg/config"
 	"mnesis.com/pkg/server"
 	"mnesis.com/pkg/server/endpoints"
-	"mnesis.com/pkg/server/session"
 )
 
 type Service struct {
-	Config         *config.Config
-	Routes         *endpoints.APIRoutes
-	SessionManager *session.SessionManager
+	Config *config.Config
+	Routes *endpoints.Routes
 }
 
-func NewService(cfg *config.Config, routes *endpoints.APIRoutes) *Service {
+func NewService(cfg *config.Config, routes *endpoints.Routes) *Service {
 
 	gosession.InitManager(
 		gosession.SetStore(redis.NewRedisStore(&redis.Options{
@@ -33,9 +31,8 @@ func NewService(cfg *config.Config, routes *endpoints.APIRoutes) *Service {
 
 	// Create a new service
 	return &Service{
-		Config:         cfg,
-		Routes:         routes,
-		SessionManager: session.New(cfg),
+		Config: cfg,
+		Routes: routes,
 	}
 }
 
@@ -46,8 +43,14 @@ func (s *Service) Start() {
 	// TODO Implement PubSub for Async processes
 
 	// Init HTTP Server
-	api := server.NewAPIDefinition(*s.Config, s.Routes, s.SessionManager)
-	server := server.NewServer(*api, s.Config.Port)
+	api := server.NewAPIDefinition(*s.Config, s.Routes)
+
+	server := server.New(server.ServerConfig{
+		API:       api,
+		RedisUrl:  s.Config.RedisHost,
+		JWTSecret: s.Config.JWTSecret,
+		Port:      s.Config.Port,
+	})
 	// Start the server, and handle shutdown
 	server.Listen()
 }

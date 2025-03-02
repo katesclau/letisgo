@@ -1,5 +1,7 @@
 package authorization
 
+import "errors"
+
 type AuthorizationRole int
 
 const (
@@ -8,3 +10,5 @@ const (
 	Admin
 	SuperAdmin
 )
+
+var ErrRoleNotDefined = errors.New("Role not defined")

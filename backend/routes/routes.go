@@ -7,8 +7,8 @@ import (
 )
 
 // Routes is a map of API endpoints
-func Get() *endpoints.APIRoutes {
-	return &endpoints.APIRoutes{
+func Get() *endpoints.Routes {
+	return &endpoints.Routes{
 		"GET /health":  Health,
 		"POST /login":  Login,
 		"GET /static/": ui.File,

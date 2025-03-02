@@ -8,7 +8,7 @@ import (
 	"mnesis.com/pkg/server/endpoints"
 )
 
-var File = endpoints.APIRouteEndpoint{
+var File = endpoints.RouteEndpoint{
 	Handler: http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			filePath := r.URL.Path[len("/static/"):]

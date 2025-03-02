@@ -41,7 +41,8 @@ func Access() templ.Component {
 		user, err := helpers.Get[*models.User](ctx, "user")
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
-				"err": err,
+				"err":  err,
+				"user": user,
 			}).Trace("[Access] Unable to parse user from context")
 		} else {
 			logrus.WithFields(logrus.Fields{
@@ -57,7 +58,7 @@ func Access() templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(user.Username)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `frontend/components/navigation/access.templ`, Line: 27, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `frontend/components/navigation/access.templ`, Line: 28, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {

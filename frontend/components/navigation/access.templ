@@ -14,6 +14,7 @@ templ Access() {
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"err": err,
+				"user": user,
 			}).Trace("[Access] Unable to parse user from context")
 		} else {
 			logrus.WithFields(logrus.Fields{

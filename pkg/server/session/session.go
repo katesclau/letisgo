@@ -7,7 +7,6 @@ import (
 	"github.com/go-session/session/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
-	"mnesis.com/pkg/config"
 	"mnesis.com/pkg/models"
 	"mnesis.com/pkg/server/authorization"
 )
@@ -18,17 +17,29 @@ var (
 	ErrUnauthorized = errors.New("Unauthorized")
 )
 
-type SessionManager struct {
-	Config *config.Config
+type SessionManager interface {
+	Create(w http.ResponseWriter, r *http.Request, user *models.User) error
+	Get(w http.ResponseWriter, r *http.Request) (*models.User, bool)
 }
 
-func New(cfg *config.Config) *SessionManager {
-	return &SessionManager{
-		Config: cfg,
+type RedisSessionManagerConfig struct {
+	RedisUrl  string
+	JWTSecret []byte
+}
+
+type RedisSessionManager struct {
+	Config    RedisSessionManagerConfig
+	AuthStore authorization.AuthorizationStore
+}
+
+func New(cfg RedisSessionManagerConfig, authStore authorization.AuthorizationStore) SessionManager {
+	return &RedisSessionManager{
+		Config:    cfg,
+		AuthStore: authStore,
 	}
 }
 
-func (s *SessionManager) CreateSession(w http.ResponseWriter, r *http.Request, user *models.User) error {
+func (s *RedisSessionManager) Create(w http.ResponseWriter, r *http.Request, user *models.User) error {
 	store, err := session.Start(r.Context(), w, r)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -61,13 +72,37 @@ func (s *SessionManager) CreateSession(w http.ResponseWriter, r *http.Request, u
 	return nil
 }
 
-func (s *SessionManager) Authorize(w http.ResponseWriter, r *http.Request, role authorization.AuthorizationRole) {
+func (s *RedisSessionManager) Get(w http.ResponseWriter, r *http.Request) (*models.User, bool) {
+	var user *models.User
+	authorized := true
+	logrus.WithFields(logrus.Fields{
+		"path": r.URL.Path,
+	}).Trace("[Session][GET]")
+
+	// Get required role for request path
+	role, err := s.AuthStore.Get(r.URL.Path)
+	logrus.WithFields(logrus.Fields{
+		"role": role,
+		"err":  err,
+	}).Trace("[Session][GET] Role")
+	if role == authorization.None || err == authorization.ErrRoleNotDefined {
+		logrus.WithFields(logrus.Fields{
+			"path": r.URL.Path,
+		}).Trace("[Session] No role defined for path")
+		return user, authorized
+	} else if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+			"path":  r.URL.Path,
+		}).Error("[Session] Error getting role for path")
+		return user, !authorized
+	}
+
 	store, err := session.Start(r.Context(), w, r)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err,
 		}).Error("[Session] Error starting session store")
-		return
 	}
 
 	// Get the JWT from the request
@@ -75,26 +110,25 @@ func (s *SessionManager) Authorize(w http.ResponseWriter, r *http.Request, role 
 	// Extract the JWT from the AuthHeader
 	jwt := extractJWT(authHeader)
 	if jwt == "" {
-		logrus.Error("[Authorization] No JWT")
+		logrus.Error("[Session] No JWT")
 		http.Error(w, ErrEmptyToken.Error(), http.StatusUnauthorized)
 	}
 
 	// Get the user from the session store
 	u, ok := store.Get(jwt)
 	if !ok || u == nil {
-		logrus.Error("[Authorization] No User")
+		logrus.Error("[Session] No User")
 		http.Error(w, ErrUserNotFound.Error(), http.StatusUnauthorized)
 	}
 
 	// Cast the user to the User struct
-	user, ok := u.(*models.User)
+	user, ok = u.(*models.User)
 	if !ok {
-		logrus.Error("[Authorization] Invalid User")
+		logrus.Error("[Session] Invalid User")
 		http.Error(w, ErrUserNotFound.Error(), http.StatusUnauthorized)
 	}
 
 	// Check if the user has the required role
-	var authorized bool
 	for _, r := range user.Roles {
 		authorized = authorized || r >= role
 	}
@@ -102,16 +136,14 @@ func (s *SessionManager) Authorize(w http.ResponseWriter, r *http.Request, role 
 	if !authorized {
 		logrus.WithFields(logrus.Fields{
 			"user": user,
-		}).Error("[Authorization] Unauthorized")
+		}).Error("[Session] Unauthorized")
 		http.Error(w, ErrUnauthorized.Error(), http.StatusUnauthorized)
 	}
 
-	logrus.WithFields(logrus.Fields{
-		"user": user,
-	}).Trace("[Authorization] Authorized")
+	return user, authorized
 }
 
-func (s *SessionManager) generateJWT(user *models.User) (string, error) {
+func (s *RedisSessionManager) generateJWT(user *models.User) (string, error) {
 	// The JWT should contain the user's ID, username, email, and roles
 	// The JWT should be signed using a secret key
 	// The JWT should have an expiry time

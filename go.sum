@@ -53,8 +53,6 @@ github.com/go-session/redis/v3 v3.2.1 h1:H9ZFlkbZ07xawsROvoTDYQhyy6CBgTEHYjrs2V0
 github.com/go-session/redis/v3 v3.2.1/go.mod h1:y35Y/aP4YtNuYl7hwKNQMHwYxPNytgpBAWmOaEWl55Y=
 github.com/go-session/session/v3 v3.1.5 h1:G44Qx6wts5IA2jNLWYOVYxip/0LH5FTg8/Tded0Lt6s=
 github.com/go-session/session/v3 v3.1.5/go.mod h1:sWg9Nca0XsmPHUnPypN+yl6zV/OSilR69vFBnkJgNjY=
-github.com/golang-jwt/jwt v3.2.2+incompatible h1:IfV12K8xAKAnZqdXVzCZ+TOjboZ2keLg81eXfW3O+oY=
-github.com/golang-jwt/jwt v3.2.2+incompatible/go.mod h1:8pz2t5EyA70fFQQSrl6XZXzqecmYZeUEB8OUGHkxJ+I=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=
 github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
