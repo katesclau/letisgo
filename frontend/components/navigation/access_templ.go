@@ -69,7 +69,7 @@ func Access() templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"access\" class=\"inline-flex float-right right-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"access\" class=\"inline-flex float-right right-4\"><div class=\"dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-field\">Access</div><ul class=\"menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm\"><li><button class=\"btn\" onclick=\"login.showModal()\">Login</button></li><li><button class=\"btn\" onclick=\"register.showModal()\">Register</button></li><li><button class=\"btn\" onclick=\"forgotPassword.showModal()\">Forgot your password?</button></li></ul></div><div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -85,17 +85,69 @@ func Access() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Password: </label><input type=\"password\" name=\"password\"><!-- if there is a button in form, it will close the modal --><button class=\"btn\" hx-post=\"/login\" hx-swap=\"outerHTML\" hx-target=\"#access\">Login</button> <button class=\"btn\" hx-post=\"/forgot\" hx-swap=\"innerHTML\" hx-target=\"#content\">Forgot Password</button></div></form>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Email: </label><input type=\"email\" name=\"email\"> <label>Password: </label><input type=\"password\" name=\"password\"> <button class=\"btn\" hx-post=\"/user/register\" hx-swap=\"outerHTML\" hx-target=\"#access\">Sign up</button></div></form>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = basic.Modal("Login", "Welcome back!").Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = basic.Modal("register", "Sign up!").Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Username: </label><input type=\"text\" name=\"username\"> <label>Password: </label><input type=\"password\" name=\"password\"> <button class=\"btn\" hx-post=\"/user/login\" hx-swap=\"outerHTML\" hx-target=\"#access\">Login</button></div></form>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				return nil
+			})
+			templ_7745c5c3_Err = basic.Modal("login", "Login").Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var5 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<form method=\"dialog\" class=\"w-full\"><div class=\"grid grix-cols-2 place-content-center gap-4\"><label>Email: </label><input type=\"email\" name=\"email\"> <button class=\"btn\" hx-post=\"/user/forgot\" hx-swap=\"outerHTML\" hx-target=\"#access\">Reset Password</button></div></form>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				return nil
+			})
+			templ_7745c5c3_Err = basic.Modal("forgotPassword", "Forgot your password?").Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

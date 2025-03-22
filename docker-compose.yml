@@ -5,7 +5,7 @@ services:
       - "4566:4566"
       - "4571:4571"
     environment:
-      - SERVICES=s3,lambda,dynamodb,eventbridge,opensearch,elasticache
+      - SERVICES=s3,lambda,dynamodb,eventbridge,opensearch,elasticache,iam,vpc
       - DEBUG=1
 
   redis:
