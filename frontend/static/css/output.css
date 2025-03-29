@@ -1745,17 +1745,8 @@
   .table {
     display: table;
   }
-  .h-7 {
-    height: calc(var(--spacing) * 7);
-  }
-  .h-46 {
-    height: calc(var(--spacing) * 46);
-  }
   .w-52 {
     width: calc(var(--spacing) * 52);
-  }
-  .w-54 {
-    width: calc(var(--spacing) * 54);
   }
   .w-full {
     width: 100%;
@@ -1838,12 +1829,6 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
-  .p-7 {
-    padding: calc(var(--spacing) * 7);
-  }
-  .p-9 {
-    padding: calc(var(--spacing) * 9);
-  }
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -1903,9 +1888,6 @@
   .ease-in {
     --tw-ease: var(--ease-in);
     transition-timing-function: var(--ease-in);
-  }
-  .\[dl\:�\@\1d Nջ��\1c M���AX�B\1d �����\1f b�\*��Cə�dC�\14 \]W�X���n�Yy��-h���\1c �e69Z\17 c\@\] {
-    dl: �@Nջ��M���AX�B�����b�*��Cə�dC�]W�X���n�Yy��-h����e69Zc@;
   }
   .sm\:block {
     @media (width >= 40rem) {
