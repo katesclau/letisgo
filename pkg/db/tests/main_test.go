@@ -19,7 +19,7 @@ import (
 
 var (
 	ddbClient *dynamodb.Client
-	ddb       db.DynamoDBHandler
+	ddb       db.DynamoDBHandler[TestRecord]
 	mtx       = &sync.Mutex{}
 )
 
@@ -29,7 +29,7 @@ const (
 
 type testStage struct {
 	t   *testing.T
-	ddb db.DynamoDBHandler
+	ddb db.DynamoDBHandler[TestRecord]
 }
 
 func TestMain(m *testing.M) {
@@ -56,7 +56,7 @@ func TestMain(m *testing.M) {
 	})
 	mustBeNilErr(err)
 
-	ddb = db.NewDynamoDBHandler(
+	ddb = db.NewDynamoDBHandler[TestRecord](
 		ddbClient,
 		tableName,
 	)
