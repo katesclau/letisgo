@@ -83,4 +83,30 @@ func Test_DB_Provider(t *testing.T) {
 		require.Equal(t, test, record.GetStruct())
 	})
 
+	t.Run("Should be able to delete record, and return its values", func(t *testing.T) {
+		ctx := context.Background()
+
+		test := TestStruct{
+			ID:    uuid.NewString(),
+			Value: "Some string to delete",
+		}
+
+		// Insert the record to be deleted
+		o, err := s.ddb.Insert(ctx, &test)
+		require.Nil(t, err)
+		require.NotNil(t, o)
+
+		// Delete the record
+		deletedRecord, err := s.ddb.Delete(ctx, reflect.TypeOf(test).Name(), test.ID)
+		require.Nil(t, err)
+		require.NotNil(t, deletedRecord)
+
+		// Verify the deleted record matches the original
+		require.Equal(t, test, deletedRecord.GetStruct())
+
+		// Attempt to retrieve the deleted record
+		_, err = s.ddb.Get(ctx, reflect.TypeOf(test).Name(), test.ID)
+		require.NotNil(t, err)
+
+	})
 }

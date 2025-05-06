@@ -15,6 +15,7 @@ import (
 type DynamoDBHandler[T any] interface {
 	Insert(ctx context.Context, item any) (*dynamodb.PutItemOutput, error)
 	Get(ctx context.Context, pk string, sk string) (T, error)
+	Delete(ctx context.Context, pk string, sk string) (T, error)
 }
 
 type dynamoDBHandler[T any] struct {
@@ -109,6 +110,39 @@ func (h *dynamoDBHandler[T]) Get(ctx context.Context, part string, rang string) 
 		logrus.Debug("failed to unmarshal", err)
 		return ret, errors.New("record not found")
 
+	}
+
+	return ret, nil
+}
+
+func (h *dynamoDBHandler[T]) Delete(ctx context.Context, part string, rang string) (T, error) {
+	var ret T
+	key := map[string]types.AttributeValue{
+		pk: &types.AttributeValueMemberS{Value: part},
+		sk: &types.AttributeValueMemberS{Value: rang},
+	}
+
+	input := &dynamodb.DeleteItemInput{
+		TableName:    &h.tableName,
+		Key:          key,
+		ReturnValues: types.ReturnValueAllOld,
+	}
+
+	output, err := h.client.DeleteItem(ctx, input)
+	if err != nil {
+		logrus.Debug("failed delete", err)
+		return ret, err
+	}
+
+	if output.Attributes == nil {
+		logrus.Debug("not found", err)
+		return ret, errors.New("record not found")
+	}
+
+	err = attributevalue.UnmarshalMap(output.Attributes, &ret)
+	if err != nil {
+		logrus.Debug("failed to unmarshal", err)
+		return ret, errors.New("failed to unmarshal deleted record")
 	}
 
 	return ret, nil
