@@ -16,6 +16,9 @@ type DynamoDBHandler[T any] interface {
 	Insert(ctx context.Context, item any) (*dynamodb.PutItemOutput, error)
 	Get(ctx context.Context, pk string, sk string) (T, error)
 	Delete(ctx context.Context, pk string, sk string) (T, error)
+	BatchGet(ctx context.Context, keys []KeyValues) ([]T, error)
+	// Update(ctx context.Context, pk string, sk string, updateExpression string, expressionValues map[string]types.AttributeValue) (T, error)
+	// Scan(ctx context.Context, filterExpression string, expressionValues map[string]types.AttributeValue) ([]T, error)
 }
 
 type dynamoDBHandler[T any] struct {
@@ -146,4 +149,55 @@ func (h *dynamoDBHandler[T]) Delete(ctx context.Context, part string, rang strin
 	}
 
 	return ret, nil
+}
+
+func (h *dynamoDBHandler[T]) BatchGet(ctx context.Context, keys []KeyValues) ([]T, error) {
+	var results []T
+
+	if len(keys) == 0 {
+		return results, nil
+	}
+
+	avKeys := make([]map[string]types.AttributeValue, 0, len(keys))
+	for _, key := range keys {
+		keyMap, err := attributevalue.MarshalMap(key)
+		if err != nil {
+			logrus.Debug("failed to marshal key", err)
+			// return nil, err
+		}
+		avKeys = append(avKeys, keyMap)
+	}
+
+	batchInput := &dynamodb.BatchGetItemInput{
+		RequestItems: map[string]types.KeysAndAttributes{
+			h.tableName: {
+				Keys: avKeys,
+			},
+		},
+	}
+
+	output, err := h.client.BatchGetItem(ctx, batchInput)
+	if err != nil {
+		logrus.Debug("failed batch get", err)
+		return nil, err
+	}
+
+	items, ok := output.Responses[h.tableName]
+	if !ok {
+		logrus.Debug("no items found in batch get response")
+		return results, nil
+	}
+
+	results = make([]T, 0, len(keys))
+	for _, item := range items {
+		var record T
+		err := attributevalue.UnmarshalMap(item, &record)
+		if err != nil {
+			logrus.Warn("failed to unmarshal item", err)
+			// return nil, err
+		}
+		results = append(results, record)
+	}
+
+	return results, nil
 }

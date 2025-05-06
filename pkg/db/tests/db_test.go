@@ -109,4 +109,43 @@ func Test_DB_Provider(t *testing.T) {
 		require.NotNil(t, err)
 
 	})
+
+	t.Run("Should be able to batch get items in DB", func(t *testing.T) {
+		ctx := context.Background()
+
+		// Create test records
+		test1 := TestStruct{
+			ID:    uuid.NewString(),
+			Value: "Batch item 1",
+		}
+		test2 := TestStruct{
+			ID:    uuid.NewString(),
+			Value: "Batch item 2",
+		}
+
+		// Insert test records
+		_, err := s.ddb.Insert(ctx, &test1)
+		require.Nil(t, err)
+		_, err = s.ddb.Insert(ctx, &test2)
+		require.Nil(t, err)
+
+		// Perform batch get
+		keys := []db.KeyValues{
+			{
+				Pk: "TestStruct",
+				Sk: test1.ID,
+			},
+			{
+				Pk: "TestStruct",
+				Sk: test2.ID,
+			},
+		}
+		records, err := s.ddb.BatchGet(ctx, keys)
+		require.Nil(t, err)
+		require.Len(t, records, 2)
+
+		// Verify the retrieved records match the originals
+		require.Equal(t, test1, records[0].GetStruct())
+		require.Equal(t, test2, records[1].GetStruct())
+	})
 }
