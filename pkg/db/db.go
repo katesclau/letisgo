@@ -13,11 +13,11 @@ import (
 )
 
 type DynamoDBHandler[T any] interface {
-	Insert(ctx context.Context, item any) (*dynamodb.PutItemOutput, error)
+	Insert(ctx context.Context, item T) (*T, error)
 	Get(ctx context.Context, pk string, sk string) (T, error)
 	Delete(ctx context.Context, pk string, sk string) (T, error)
 	BatchGet(ctx context.Context, keys []KeyValues) ([]T, error)
-	// Update(ctx context.Context, pk string, sk string, updateExpression string, expressionValues map[string]types.AttributeValue) (T, error)
+	Update(ctx context.Context, item T) error
 	// Scan(ctx context.Context, filterExpression string, expressionValues map[string]types.AttributeValue) ([]T, error)
 }
 
@@ -27,7 +27,8 @@ type dynamoDBHandler[T any] struct {
 }
 
 var (
-	ErrDuplicatedID = errors.New("duplicated id")
+	ErrDuplicatedID   = errors.New("duplicated id")
+	ErrRecordNotFound = errors.New("record not found")
 )
 
 const (
@@ -42,14 +43,8 @@ func NewDynamoDBHandler[T any](ddb *dynamodb.Client, tableName string) DynamoDBH
 	}
 }
 
-func (h *dynamoDBHandler[T]) Insert(ctx context.Context, item any) (*dynamodb.PutItemOutput, error) {
-	recordProvider, ok := item.(RecordInterface)
-	if !ok {
-		return nil, errors.New("item does not implement Record() method")
-	}
-	record := recordProvider.Record()
-
-	av, err := attributevalue.MarshalMap(record)
+func (h *dynamoDBHandler[T]) Insert(ctx context.Context, item T) (*T, error) {
+	av, err := attributevalue.MarshalMap(item)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +74,13 @@ func (h *dynamoDBHandler[T]) Insert(ctx context.Context, item any) (*dynamodb.Pu
 		return nil, err
 	}
 
-	return resp, nil
+	var ret T
+	err = attributevalue.UnmarshalMap(resp.Attributes, &ret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ret, nil
 }
 
 func (h *dynamoDBHandler[T]) Get(ctx context.Context, part string, rang string) (T, error) {
@@ -105,13 +106,13 @@ func (h *dynamoDBHandler[T]) Get(ctx context.Context, part string, rang string) 
 
 	if len(output.Items) == 0 {
 		logrus.Debug("not found", err)
-		return ret, errors.New("record not found")
+		return ret, ErrRecordNotFound
 	}
 
 	err = attributevalue.UnmarshalMap(output.Items[0], &ret)
 	if err != nil {
 		logrus.Debug("failed to unmarshal", err)
-		return ret, errors.New("record not found")
+		return ret, err
 
 	}
 
@@ -139,7 +140,7 @@ func (h *dynamoDBHandler[T]) Delete(ctx context.Context, part string, rang strin
 
 	if output.Attributes == nil {
 		logrus.Debug("not found", err)
-		return ret, errors.New("record not found")
+		return ret, ErrRecordNotFound
 	}
 
 	err = attributevalue.UnmarshalMap(output.Attributes, &ret)
@@ -200,4 +201,38 @@ func (h *dynamoDBHandler[T]) BatchGet(ctx context.Context, keys []KeyValues) ([]
 	}
 
 	return results, nil
+}
+
+func (h *dynamoDBHandler[T]) Update(ctx context.Context, item T) error {
+	av, err := attributevalue.MarshalMap(item)
+	if err != nil {
+		logrus.Debug("failed to marshal item", err)
+		return err
+	}
+
+	cond := expression.And(expression.AttributeExists(expression.Name(pk)), expression.AttributeExists(expression.Name(sk)))
+	expr, err := expression.NewBuilder().WithCondition(cond).Build()
+	if err != nil {
+		return err
+	}
+
+	input := dynamodb.PutItemInput{
+		Item:                     av,
+		TableName:                &h.tableName,
+		ConditionExpression:      expr.Condition(),
+		ExpressionAttributeNames: expr.Names(),
+	}
+
+	_, err = h.client.PutItem(ctx, &input)
+	var ccf *types.ConditionalCheckFailedException
+	if errors.As(err, &ccf) {
+		logrus.Debug("faield on conditional check", err)
+		return ErrRecordNotFound
+	}
+	if err != nil {
+		logrus.Debug("failed on put item action", err)
+		return err
+	}
+
+	return nil
 }

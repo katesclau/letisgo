@@ -3,7 +3,6 @@ package tests
 import (
 	"context"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -12,42 +11,22 @@ import (
 	"mnesis.com/pkg/db"
 )
 
-type TestStruct struct {
-	ID    string
-	Value string
-}
-
-type TestProperties struct {
+type testStruct struct {
+	ID    string `json:"id" dynamodbav:"sk"`
 	Value string `json:"value" dynamodbav:"value,omitempty"`
+	Typ   string `json:"" dynamodbav:"pk"`
 }
 
-type TestRecord struct {
-	db.Record
-	TestProperties
-}
-
-func (tr *TestRecord) GetStruct() TestStruct {
-	return TestStruct{
-		ID:    tr.Sk,
-		Value: tr.Value,
+func NewTestStruct(v string) testStruct {
+	return testStruct{
+		ID:    uuid.NewString(),
+		Value: v,
+		Typ:   "TestStruct",
 	}
 }
 
-func (t *TestStruct) Record() any {
-	// TODO make this type assertion available to all models
-	typ := strings.Split(reflect.TypeOf(t).String(), ".")[1]
-	r := TestRecord{
-		db.Record{
-			Pk:      typ,
-			Sk:      t.ID,
-			Type:    typ,
-			Version: 0,
-		},
-		TestProperties{
-			Value: t.Value,
-		},
-	}
-	return r
+func (ts *testStruct) GetType() string {
+	return ts.Typ
 }
 
 func Test_DB_Provider(t *testing.T) {
@@ -57,10 +36,7 @@ func Test_DB_Provider(t *testing.T) {
 	t.Run("Should be able insert item in DB", func(t *testing.T) {
 		ctx := context.Background()
 
-		o, err := s.ddb.Insert(ctx, &TestStruct{
-			ID:    uuid.NewString(),
-			Value: "Some string",
-		})
+		o, err := s.ddb.Insert(ctx, NewTestStruct("Some text"))
 		require.Nil(t, err)
 
 		require.NotNil(t, o)
@@ -69,40 +45,34 @@ func Test_DB_Provider(t *testing.T) {
 	t.Run("Should be able get item in DB", func(t *testing.T) {
 		ctx := context.Background()
 
-		test := TestStruct{
-			ID:    uuid.NewString(),
-			Value: "Some string",
-		}
+		test := NewTestStruct("Some string")
 
-		o, err := s.ddb.Insert(ctx, &test)
+		o, err := s.ddb.Insert(ctx, test)
 		require.Nil(t, err)
 		require.NotNil(t, o)
 
-		record, err := s.ddb.Get(ctx, reflect.TypeOf(test).Name(), test.ID)
+		record, err := s.ddb.Get(ctx, test.GetType(), test.ID)
 		require.Nil(t, err)
-		require.Equal(t, test, record.GetStruct())
+		require.Equal(t, test, record)
 	})
 
 	t.Run("Should be able to delete record, and return its values", func(t *testing.T) {
 		ctx := context.Background()
 
-		test := TestStruct{
-			ID:    uuid.NewString(),
-			Value: "Some string to delete",
-		}
+		test := NewTestStruct("Some string to delete")
 
 		// Insert the record to be deleted
-		o, err := s.ddb.Insert(ctx, &test)
+		o, err := s.ddb.Insert(ctx, test)
 		require.Nil(t, err)
 		require.NotNil(t, o)
 
 		// Delete the record
-		deletedRecord, err := s.ddb.Delete(ctx, reflect.TypeOf(test).Name(), test.ID)
+		deletedRecord, err := s.ddb.Delete(ctx, test.GetType(), test.ID)
 		require.Nil(t, err)
 		require.NotNil(t, deletedRecord)
 
 		// Verify the deleted record matches the original
-		require.Equal(t, test, deletedRecord.GetStruct())
+		require.Equal(t, test, deletedRecord)
 
 		// Attempt to retrieve the deleted record
 		_, err = s.ddb.Get(ctx, reflect.TypeOf(test).Name(), test.ID)
@@ -114,19 +84,13 @@ func Test_DB_Provider(t *testing.T) {
 		ctx := context.Background()
 
 		// Create test records
-		test1 := TestStruct{
-			ID:    uuid.NewString(),
-			Value: "Batch item 1",
-		}
-		test2 := TestStruct{
-			ID:    uuid.NewString(),
-			Value: "Batch item 2",
-		}
+		test1 := NewTestStruct("Batch item 1")
+		test2 := NewTestStruct("Batch item 2")
 
 		// Insert test records
-		_, err := s.ddb.Insert(ctx, &test1)
+		_, err := s.ddb.Insert(ctx, test1)
 		require.Nil(t, err)
-		_, err = s.ddb.Insert(ctx, &test2)
+		_, err = s.ddb.Insert(ctx, test2)
 		require.Nil(t, err)
 
 		// Perform batch get
@@ -145,7 +109,28 @@ func Test_DB_Provider(t *testing.T) {
 		require.Len(t, records, 2)
 
 		// Verify the retrieved records match the originals
-		require.Equal(t, test1, records[0].GetStruct())
-		require.Equal(t, test2, records[1].GetStruct())
+		require.Equal(t, test1, records[0])
+		require.Equal(t, test2, records[1])
+	})
+
+	t.Run("Should be able to update item in DB", func(t *testing.T) {
+		ctx := context.Background()
+
+		// Create and insert a test record
+		original := NewTestStruct("Original value")
+		o, err := s.ddb.Insert(ctx, original)
+		require.Nil(t, err)
+		require.NotNil(t, o)
+
+		// Update the record
+		updated := original
+		updated.Value = "Updated value"
+		err = s.ddb.Update(ctx, updated)
+		require.Nil(t, err)
+
+		// Retrieve the updated record and verify it matches
+		retrievedRecord, err := s.ddb.Get(ctx, updated.GetType(), updated.ID)
+		require.Nil(t, err)
+		require.Equal(t, updated, retrievedRecord)
 	})
 }
