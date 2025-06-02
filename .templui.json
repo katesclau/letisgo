@@ -1,0 +1,6 @@
+{
+  "componentsDir": "frontend/components",
+  "utilsDir": "frontend/utils",
+  "moduleName": "github.com/katesclau/letisgo",
+  "jsDir": "frontend/static/assets/js"
+}

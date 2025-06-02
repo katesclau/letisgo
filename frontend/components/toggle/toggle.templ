@@ -1,0 +1,63 @@
+// templui component toggle - version: main installed by templui v0.73.2
+package toggle
+
+import "github.com/katesclau/letisgo/frontend/utils"
+
+type Props struct {
+	ID         string
+	Class      string
+	Attributes templ.Attributes
+	Name       string
+	Disabled   bool
+	Checked    bool
+}
+
+templ Toggle(props ...Props) {
+	{{ var p Props }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.ID == "" {
+		{{ p.ID = utils.RandomID() }}
+	}
+	<label
+		for={ p.ID }
+		class={ utils.TwMerge(
+            "inline-flex cursor-pointer items-center gap-2",
+            utils.If(p.Disabled, "cursor-not-allowed"),
+        ) }
+	>
+		<input
+			x-ref={ p.ID }
+			id={ p.ID }
+			if p.Name != "" {
+				name={ p.Name }
+			}
+			type="checkbox"
+			checked?={ p.Checked }
+			disabled?={ p.Disabled }
+			class="peer hidden"
+			role="switch"
+			{ p.Attributes... }
+		/>
+		<div
+			class={
+				utils.TwMerge(
+					"relative h-6 w-10",
+					"after:absolute after:left-0.5 after:top-0.5",
+					"after:h-5 after:w-5",
+					"rounded-full bg-neutral-200",
+					"after:rounded-full after:bg-muted-foreground",
+					"after:content-['']",
+					"after:transition-all",
+					"peer-checked:bg-primary",
+					"peer-checked:after:translate-x-[16px]",
+					"peer-checked:after:bg-secondary",
+					"peer-disabled:opacity-50",
+					p.Class,
+				),
+			}
+			aria-hidden="true"
+		></div>
+	</label>
+}

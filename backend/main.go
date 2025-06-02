@@ -7,10 +7,10 @@ package main
 import (
 	"context"
 
+	"github.com/katesclau/letisgo/backend/routes"
+	"github.com/katesclau/letisgo/internal/config"
+	"github.com/katesclau/letisgo/internal/service"
 	log "github.com/sirupsen/logrus"
-	"mnesis.com/backend/routes"
-	"mnesis.com/pkg/config"
-	"mnesis.com/pkg/service"
 )
 
 func main() {

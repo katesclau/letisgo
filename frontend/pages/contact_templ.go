@@ -8,7 +8,7 @@ package pages
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "mnesis.com/frontend/components/layout"
+import "github.com/katesclau/letisgo/frontend/layout"
 
 func Contact() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -43,7 +43,7 @@ func Contact() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"px-4 pt-10 pb-24 sm:px-6 xl:pr-0\"><h1>Contact Us</h1><p>Feel free to reach out to us at:</p><ul><li>Email: support@mnesis.com</li><li>Phone: +1 (555) 123-4567</li><li>Address: 123 Main St, Anytown, USA</li></ul></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"px-4 pt-10 pb-24 sm:px-6 xl:pr-0\"><h1>Contact Us</h1><p>Feel free to reach out to us at:</p><ul><li>Email: support@github.com/katesclau/letisgo</li><li>Phone: +1 (555) 123-4567</li><li>Address: 123 Main St, Anytown, USA</li></ul></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

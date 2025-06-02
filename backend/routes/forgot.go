@@ -3,11 +3,10 @@ package routes
 import (
 	"net/http"
 
+	"github.com/katesclau/letisgo/internal/server/authentication"
+	"github.com/katesclau/letisgo/internal/server/authorization"
+	"github.com/katesclau/letisgo/internal/server/endpoints"
 	"github.com/sirupsen/logrus"
-	"mnesis.com/frontend/components/navigation"
-	"mnesis.com/pkg/server/authentication"
-	"mnesis.com/pkg/server/authorization"
-	"mnesis.com/pkg/server/endpoints"
 )
 
 var Forgot = endpoints.RouteEndpoint{
@@ -16,7 +15,7 @@ var Forgot = endpoints.RouteEndpoint{
 }
 
 var forgotHandler = func(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	// ctx := r.Context()
 	err := authentication.SendResetEmail(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -26,6 +25,6 @@ var forgotHandler = func(w http.ResponseWriter, r *http.Request) {
 		"err": err,
 	}).Trace("[Forgot] Recover email sent")
 
-	component := navigation.Access()
-	component.Render(ctx, w)
+	// TODO: Update the component rendering logic
+	// component.Render(ctx, w)
 }

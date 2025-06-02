@@ -1,0 +1,62 @@
+package layout
+
+import (
+	"github.com/katesclau/letisgo/frontend/components/button"
+	"github.com/katesclau/letisgo/frontend/meta"
+	"github.com/katesclau/letisgo/frontend/modules"
+)
+
+templ ThemeSwitcherScript() {
+	{{ handle := templ.NewOnceHandle() }}
+	@handle.Once() {
+		<script nonce={ templ.GetNonce(ctx) }>
+			// Initial theme setup
+			document.documentElement.classList.toggle('dark', localStorage.getItem('appTheme') === 'dark');
+
+			document.addEventListener('alpine:init', () => {
+				Alpine.data('themeHandler', () => ({
+					isDark: localStorage.getItem('appTheme') === 'dark',
+					themeClasses() {
+						return this.isDark ? 'text-white' : 'bg-white text-black'
+					},
+					toggleTheme() {
+						this.isDark = !this.isDark;
+						localStorage.setItem('appTheme', this.isDark ? 'dark' : 'light');
+						document.documentElement.classList.toggle('dark', this.isDark);
+					}
+				}))
+			})
+		</script>
+	}
+}
+
+templ Base() {
+	<html lang="en" suppressHydrationWarning>
+		@meta.Head("Letisgo")
+		@meta.Body("Inter") {
+			@Header() {
+				@modules.Navbar() {
+					@button.Button(button.Props{
+						Href: "/",
+					}) {
+						<span>Home</span>
+					}
+					@button.Button(button.Props{
+						Href: "/about",
+					}) {
+						<span>About</span>
+					}
+					@button.Button(button.Props{
+						Href: "/contact",
+					}) {
+						<span>Contact</span>
+					}
+				}
+			}
+			@Content() {
+				{ children... }
+			}
+			@Footer()
+		}
+	</html>
+}

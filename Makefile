@@ -7,7 +7,7 @@ prepare:
 	./scripts/install_deps.sh
 
 templ:
-	@templ generate --watch --proxy="http://localhost:8080"
+	@templ generate --watch --proxy="http://localhost:8080" --open-browser=false
 
 server:
 	./bin/air
@@ -23,7 +23,7 @@ infra-down:
 	docker compose down
 
 dev: infra
-	REDIS_HOST=localhost:6379 make -j5 tailwind server templ
+	REDIS_HOST=localhost:6379 make -j5 tailwind templ server
 
 build:
 	go build -o main backend/main.go

@@ -4,11 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/katesclau/letisgo/internal/server/authentication"
+	"github.com/katesclau/letisgo/internal/server/authorization"
+	"github.com/katesclau/letisgo/internal/server/endpoints"
 	"github.com/sirupsen/logrus"
-	"mnesis.com/frontend/components/navigation"
-	"mnesis.com/pkg/server/authentication"
-	"mnesis.com/pkg/server/authorization"
-	"mnesis.com/pkg/server/endpoints"
 )
 
 var Register = endpoints.RouteEndpoint{
@@ -29,6 +28,7 @@ var registerHandler = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx = context.WithValue(ctx, "user", user)
-	component := navigation.Access()
-	component.Render(ctx, w)
+	// TODO: Update the component rendering logic
+	// component := navigation.Access()
+	// component.Render(ctx, w)
 }

@@ -80,9 +80,9 @@ make dev
     - [x] Views
     - [x] Static Files
 - [ ] Frontend:
-    - [x] HTMX
     - [x] Tailwind CSS
     - [x] Templ
+    - [ ] TemplUI
     - [x] Hot Reloading
 - [ ] Add Authentication/Authorization
 - [ ] Add Cache support

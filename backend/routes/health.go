@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"mnesis.com/pkg/server/authorization"
-	"mnesis.com/pkg/server/endpoints"
+	"github.com/katesclau/letisgo/internal/server/authorization"
+	"github.com/katesclau/letisgo/internal/server/endpoints"
 )
 
 var Health = endpoints.RouteEndpoint{

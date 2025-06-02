@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"mnesis.com/frontend/pages"
-	"mnesis.com/pkg/server/endpoints"
-	"mnesis.com/pkg/ui"
+	"github.com/katesclau/letisgo/frontend/pages"
+	"github.com/katesclau/letisgo/internal/server/endpoints"
+	"github.com/katesclau/letisgo/internal/ui"
 )
 
 // Routes is a map of API endpoints

@@ -42,3 +42,8 @@ frontend/static/css/font-awesome.*
 
 # Fonts
 frontend/static/fonts/*
+
+# Templ assets
+*_templ.go
+*_templ.txt
+.DS_Store
